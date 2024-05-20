@@ -1,4 +1,7 @@
 import * as React from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router';
+import { useDispatch } from 'react-redux';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -10,18 +13,35 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { registerUser } from '../redux/actions';
 
 
 const defaultTheme = createTheme();
 
 export default function SignIn() {
+  const [formData, setFormData] = useState({
+    userName: '',
+    password: '',
+  });
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const userDetails = JSON.parse(sessionStorage.getItem('userDetails'))
+    if(userDetails){
+      dispatch(registerUser(userDetails));
+      navigate('/dashboard');
+    }
+  };
+
+  const handleChange = (event) => {
+    const { id, value } = event.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [id]: value
+    }));
   };
 
   return (
@@ -43,7 +63,7 @@ export default function SignIn() {
             Sign in
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            <TextField
+            {/* <TextField
               margin="normal"
               required
               fullWidth
@@ -52,7 +72,8 @@ export default function SignIn() {
               name="email"
               autoComplete="family-name"
               autoFocus
-            />
+              onChange={handleChange}
+            /> */}
             <TextField
               margin="normal"
               required
@@ -62,6 +83,7 @@ export default function SignIn() {
               name="userName"
               autoComplete="family-name"
               autoFocus
+              onChange={handleChange}
             />
             <TextField
               margin="normal"
@@ -72,6 +94,8 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={handleChange}
+
             />
             <Button
               type="submit"

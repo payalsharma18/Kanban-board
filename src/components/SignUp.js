@@ -1,4 +1,7 @@
 import * as React from 'react';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -10,16 +13,46 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { registerUser } from '../redux/actions';
 
 
 const defaultTheme = createTheme();
 
 export default function SignUp() {
+
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    id:'',
+    name: '',
+    userName: '',
+    email: '',
+    password: '',
+  });
+
+
   const handleSubmit = (event) => {
     event.preventDefault();
-   
-    
+    if (formData.name && formData.userName && formData.email && formData.password) {
+      const id = Math.random();
+      const userDetails = { name: formData.name, userName: formData.userName, email: formData.email, password: formData.password , id:id }
+      const prevUserDetails = JSON.parse(sessionStorage.getItem('userDetails')) || [];
+      const updatedUserDetails = [...prevUserDetails, userDetails]
+      sessionStorage.setItem('userDetails', JSON.stringify(updatedUserDetails));
+      navigate('/dashboard');
+    }
+    else {
+      alert('Please fill out all details')
+    }
   };
+
+  const handleChange = (event) => {
+    const { id, value } = event.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [id]: value
+    }))
+  }
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -41,25 +74,16 @@ export default function SignUp() {
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <TextField
                   autoComplete="given-name"
-                  name="firstName"
+                  name="name"
                   required
                   fullWidth
-                  id="firstName"
-                  label="First Name"
-                  autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
+                  id="name"
+                  label="Name"
+                  // autoFocus
+                  onChange={handleChange}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -70,6 +94,8 @@ export default function SignUp() {
                   label="User Name"
                   name="userName"
                   autoComplete="family-name"
+                  onChange={handleChange}
+
                 />
               </Grid>
               <Grid item xs={12}>
@@ -80,6 +106,8 @@ export default function SignUp() {
                   label="Email Address"
                   name="email"
                   autoComplete="family-name"
+                  onChange={handleChange}
+
                 />
               </Grid>
               <Grid item xs={12}>
@@ -91,9 +119,11 @@ export default function SignUp() {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  onChange={handleChange}
+
                 />
               </Grid>
-              
+
             </Grid>
             <Button
               type="submit"
