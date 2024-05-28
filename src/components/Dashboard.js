@@ -27,6 +27,12 @@ const Dashboard = () => {
         console.log('all tasks are', tasks)
         setAlltasks(tasks)
     },[])
+    useEffect(()=>{
+        const userName = sessionStorage.getItem('userName')
+        const tasks = JSON.parse(sessionStorage.getItem(userName))
+        console.log('all tasks are', tasks)
+        setAlltasks(tasks)
+    },[tasks])
     return (
         <div>Dashboard
             <CreateTaskModal handleOpenTask={handleOpenTask} handleCloseTask={handleCloseTask} openCreateTask={openCreateTask}></CreateTaskModal>
@@ -40,7 +46,7 @@ const Dashboard = () => {
             </div>
             <div>
                 <h1>showing all tasks</h1>
-                {allTasks.map((item)=>{return (
+                { allTasks && allTasks.length>0 && allTasks.map((item)=>{return (
                     <li>
                         {item.taskName}
                     </li>
