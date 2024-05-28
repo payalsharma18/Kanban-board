@@ -1,10 +1,17 @@
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import CreateTaskModal from './Modals/CreateTaskModal';
+import { setTasks } from '../redux/actions';
+
 const Dashboard = () => {
 
 
     const [openCreateTask, setOpenCreateTask] = React.useState(false);
-
+    const [allTasks, setAlltasks] = React.useState([])
+    const stateData = useSelector((state)=>state)
+    const {tasks} = stateData.taskReducer
+    console.log(tasks)
+    const dispatch = useDispatch()
 
     const handleOpenTask = () => {
         setOpenCreateTask(true);
@@ -15,7 +22,10 @@ const Dashboard = () => {
     };
 
     useEffect(()=>{
-        
+        const userName = sessionStorage.getItem('userName')
+        const tasks = JSON.parse(sessionStorage.getItem(userName))
+        console.log('all tasks are', tasks)
+        setAlltasks(tasks)
     },[])
     return (
         <div>Dashboard
@@ -27,6 +37,14 @@ const Dashboard = () => {
             </div>
             <div className='column'>
             <button onClick={handleOpenTask} > Create Task + </button>
+            </div>
+            <div>
+                <h1>showing all tasks</h1>
+                {allTasks.map((item)=>{return (
+                    <li>
+                        {item.taskName}
+                    </li>
+                )})}
             </div>
         </div>
 
