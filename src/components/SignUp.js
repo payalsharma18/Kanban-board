@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+// import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -13,7 +13,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { registerUser } from '../redux/actions';
+// import { registerUser } from '../redux/actions';
 
 
 const defaultTheme = createTheme();
@@ -39,6 +39,8 @@ export default function SignUp() {
       const prevUserDetails = JSON.parse(sessionStorage.getItem('userDetails')) || [];
       const updatedUserDetails = [...prevUserDetails, userDetails]
       sessionStorage.setItem('userDetails', JSON.stringify(updatedUserDetails));
+      console.log(formData.userName);
+      sessionStorage.setItem('userName', formData.userName);
       navigate('/dashboard');
     }
     else {
